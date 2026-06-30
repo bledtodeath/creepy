@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE VOYAGE OF THE DAMNED</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=Cinzel:wght@400;700&family=UnifrakturMaguntia&display=swap');
+
+        :root {
+            --blood-red: #8b0000;
+            --ghost-white: #f8f8ff;
+            --abyss-black: #0a0a0a;
+            --gold-cursed: #d4af37;
+            --fog-gray: #7a7a7a;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--abyss-black);
+            color: var(--ghost-white);
+            font-family: 'IM Fell English SC', serif;
+            overflow: hidden;
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="%23d4af37" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>'), auto;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(139, 0, 0, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(139, 0, 0, 0.1) 0%, transparent 20%),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.9));
+        }
+
+        .fog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><defs><filter id="noiseFilter"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch"/></filter></defs><rect width="100%" height="100%" filter="url(%23noiseFilter)" opacity="0.3"/></svg>');
+            pointer-events: none;
+            animation: fog-move 60s infinite linear;
+            z-index: 100;
+        }
+
+        @keyframes fog-move {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        .ship {
+            position: absolute;
+            bottom: -50px;
+            width: 300px;
+            height: 200px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 200"><path fill="%233a2e22" d="M20 150h260v20H20z"/><path fill="%235a4a3a" d="M50 100h200v50H50z"/><path fill="%232a1e18" d="M100 50h100v50H100z"/><path fill="%23d4af37" d="M120 30h60v20h-60z"/><path fill="%238b0000" d="M140 10h20v20h-20z"/></svg>') no-repeat center;
+            animation: ship-sway 10s infinite ease-in-out;
+        }
+
+        @keyframes ship-sway {
+            0%, 100% { transform: rotate(-2deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        .title {
+            font-family: 'UnifrakturMaguntia', cursive;
+            font-size: 4rem;
+            color: var(--gold-cursed);
+            text-shadow: 0 0 10px var(--blood-red);
+            margin-bottom: 2rem;
+            letter-spacing: 0.2em;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-family: 'Cinzel', serif;
+            font-size: 1.5rem;
+            color: var(--fog-gray);
+            margin-bottom: 3rem;
+            text-align: center;
+            max-width: 600px;
+        }
+
+        .lore-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            height: 60vh;
+            overflow-y: scroll;
+            background-color: rgba(10, 10, 10, 0.7);
+            border: 2px solid var(--gold-cursed);
+            padding: 2rem;
+            box-shadow: 0 0 20px var(--blood-red);
+            scroll-behavior: smooth;
+        }
+
+        .lore-entry {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px dashed var(--fog-gray);
+            position: relative;
+        }
+
+        .lore-entry:last-child {
+            border-bottom: none;
+        }
+
+        .lore-title {
+            font-family: 'IM Fell English SC', serif;
+            font-size: 1.8rem;
+            color: var(--blood-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .lore-date {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--fog-gray);
+            margin-bottom: 1rem;
+        }
+
+        .lore-text {
+            font-family: 'IM Fell English SC', serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--ghost-white);
+        }
+
+        .lore-text::first-letter {
+            color: var(--gold-cursed);
+            font-size: 1.5rem;
+            float: left;
+            margin-right: 0.5rem;
+        }
+
+        .whisper {
+            position: absolute;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: var(--blood-red);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+
+        .lore-entry:hover .whisper {
+            opacity: 1;
+        }
+
+        .ghost-ship {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 150px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 100"><path fill="%23ffffff" fill-opacity="0.3" d="M10 75h130v10H10z"/><path fill="%23ffffff" fill-opacity="0.2" d="M25 50h100v25H25z"/><path fill="%23ffffff" fill-opacity="0.1" d="M50 25h50v25H50z"/></svg>') no-repeat center;
+            animation: ghost-drift 20s infinite linear;
+        }
+
+        @keyframes ghost-drift {
+            0% { transform: translateX(0) translateY(0); opacity: 0.3; }
+            50% { transform: translateX(50px) translateY(-20px); opacity: 0.8; }
+            100% { transform: translateX(0) translateY(0); opacity: 0.3; }
+        }
+
+        .creepy-sound {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8rem;
+            color: var(--fog-gray);
+        }
+
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--gold-cursed);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="fog"></div>
+    <div class="ship"></div>
+    <div class="ghost-ship"></div>
+
+    <div class="container">
+        <h1 class="title">THE VOYAGE OF THE DAMNED</h1>
+        <p class="subtitle">A compendium of lost souls, cursed voyages, and the whispers of the Sea of Thieves</p>
+
+        <div class="lore-container" id="loreContainer">
+            <div class="loading" id="loading">Loading whispers from the deep...</div>
+
+            <!-- Lore entries will be injected here by JavaScript -->
+        </div>
+
+        <div class="creepy-sound" id="creepySound">Distant cannon fire echoes in the fog...</div>
+    </div>
+
+    <script>
+        const loreData = [
+            {
+                title: "The First Mate Who Wasn't There",
+                date: "Logged: 12th of Neverember, Year of the Damned",
+                text: "Captain Blacktooth's first mate, Elias Vane, was a man of few words. He spoke only in riddles and always stood too close to the edge of the ship. One stormy night, during a voyage to the Devil's Shroud, Elias simply vanished. The crew searched the ship from bow to stern, but found no trace. The next morning, the crew awoke to find Elias standing at the helm, soaking wet, with no memory of the night before. This happened three more times before the crew mutinied. The last entry in Blacktooth's log reads: 'He's not one of us. He never was.'",
+                whisper: "Look closely at the crew roster. Elias Vane was never officially recorded."
+            },
+            {
+                title: "The Gold That Whispers",
+                date: "Logged: 3rd of Frostfall, Year of the Siren's Kiss",
+                date: "Logged: 3rd of Frostfall, Year of the Siren's Kiss",
+                text: "The Athena's Fortune was a galleon known for its luck. They found more treasure than any other ship in the Sea of Thieves. But their luck turned when they discovered the Chest of Whispers. It was filled with gold doubloons that, when held, seemed to murmur faint voices. The crew became obsessed, each claiming to hear the voices of their loved ones. Within a week, the crew turned on each other. The last survivor, Quartermaster Hargrove, threw the chest overboard. The next day, the Athena's Fortune was found adrift, every crew member dead, their faces frozen in expressions of terror. The chest was never seen again, but some say you can still hear the whispers in the wind near the Devil's Shroud.",
+                whisper: "The gold is still out there. And it's calling your name."
+            },
+            {
+                title: "The Kraken's Bargain",
+                date: "Logged: 18th of Moonfall, Year of the Leviathan",
+                text: "Captain Marrow of the Black Pearl was a man of reason. He scoffed at superstitions and laughed at those who feared the Kraken. That was until his ship was dragged into the depths. Marrow found himself in a cavern, face to face with the Kraken itself. It spoke to him, offering a bargain: his soul for the lives of his crew. Marrow agreed. The next thing he knew, he was back on his ship, the crew unharmed. But something was different. Marrow could hear the Kraken's voice in his head, guiding him to other ships. He became a hunter, sinking ships and delivering their crews to the Kraken. The last entry in his log is a single sentence: 'It's not a monster. It's a god.'",
+                whisper: "Listen closely when you hear the Kraken's call. It's not a warning. It's an invitation."
+            },
+            {
+                title: "The Cursed Compass",
+                date: "Logged: 5th of Emberhold, Year of the Lost",
+                text: "The compass was found in the wreckage of the Flying Dutchman. It didn't point north. It pointed to what you desired most. Captain Ironhook's crew found it and brought it aboard. At first, it seemed like a blessing. They found treasure after treasure. But soon, the crew began to turn on each other, each accusing the other of hiding their true desires. The ship became a battleground. Ironhook, in a fit of rage, threw the compass overboard. The crew breathed a sigh of relief. But the next morning, the compass was back on the ship. It has been passed from ship to ship ever since, leaving a trail of betrayal and blood in its wake.",
+                whisper: "It's still out there. And it's pointing at you."
+            },
+            {
+                title: "The Song of the Sirens",
+                date: "Logged: 22nd of Stormpeak, Year of the Banshee's Wail",
+                text: "The sirens of the Sea of Thieves are not what they seem. They do not sing to lure sailors to their doom. They sing to warn them. The song is a lament, a dirge for those who have been lost to the sea. But the song is also a test. Those who hear it and turn away are spared. Those who hear it and follow are taken. Not by the sirens, but by the sea itself. The last survivor of the Wailing Wind, a sloop that answered the sirens' call, was found clinging to a piece of driftwood. He babbled about 'the faces in the waves' and 'the song of the deep.' He died shortly after being rescued. His last words were: 'They're not sirens. They're mourners.'",
+                whisper: "If you hear the song, don't follow it. But don't ignore it either. The sea is listening."
+            },
+            {
+                title: "The Ghost Fleet of the Devil's Shroud",
+                date: "Logged: 1st of Dreadmoon, Year of the Phantom Tide",
+                text: "The Devil's Shroud is not just a place. It's a graveyard. A graveyard of ships. On certain nights, when the fog is thick and the moon is hidden, the ghost fleet rises. Ships that have been lost to the sea, their crews still at their posts, their sails tattered but still full of wind. They sail in formation, a silent armada. Those who have seen them say the crews do not speak, do not move. They simply sail, their eyes fixed on some distant horizon. Some say the fleet is searching for something. Others say it's a warning. The last ship to encounter the ghost fleet was the Crimson Revenge. It was found the next day, adrift, its crew gone. The only thing left was the captain's log, open to the last page. It reads: 'They're not ghosts. They're echoes.'",
+                whisper: "The next time you see the Devil's Shroud, look closely at the fog. You might see them."
+            },
+            {
+                title: "The Final Entry",
+                date: "Logged: Unknown",
+                text: "This is the last entry in the log of the Damned. If you are reading this, you have found our ship. You have seen what we have seen. You have heard what we have heard. The sea is not just water. It is a living thing. It remembers. It hungers. And it is not alone. There are things in the deep that defy explanation. Things that should not exist. We tried to warn them. We tried to stop them. But they wouldn't listen. They never do. The sea is patient. It can wait. It has all the time in the world. And so do we. We are the Damned. And we are always watching. Always waiting. For the next ship. For the next crew. For you.",
+                whisper: "Turn back. While you still can."
+            }
+        ];
+
+        const loreContainer = document.getElementById('loreContainer');
+        const loading = document.getElementById('loading');
+        const creepySound = document.getElementById('creepySound');
+
+        // Display loading message
+        loading.style.display = 'block';
+
+        // Simulate loading
+        setTimeout(() => {
+            loading.style.display = 'none';
+
+            // Inject lore entries
+            loreData.forEach((entry, index) => {
+                const loreEntry = document.createElement('div');
+                loreEntry.className = 'lore-entry';
+
+                const title = document.createElement('div');
+                title.className = 'lore-title';
+                title.textContent = entry.title;
+
+                const date = document.createElement('div');
+                date.className = 'lore-date';
+                date.textContent = entry.date;
+
+                const text = document.createElement('div');
+                text.className = 'lore-text';
+                text.textContent = entry.text;
+
+                const whisper = document.createElement('div');
+                whisper.className = 'whisper';
+                whisper.textContent = entry.whisper;
+                whisper.style.top = `${Math.random() * 80 + 10}%`;
+                whisper.style.left = `${Math.random() * 80 + 10}%`;
+
+                loreEntry.appendChild(title);
+                loreEntry.appendChild(date);
+                loreEntry.appendChild(text);
+                loreEntry.appendChild(whisper);
+
+                loreContainer.appendChild(loreEntry);
+            });
+
+            // Add more whispers as the user scrolls
+            loreContainer.addEventListener('scroll', () => {
+                if (loreContainer.scrollTop + loreContainer.clientHeight >= loreContainer.scrollHeight - 10) {
+                    const newWhisper = document.createElement('div');
+                    newWhisper.className = 'whisper';
+                    newWhisper.textContent = "The sea is hungry. And you're next.";
+                    newWhisper.style.top = `${Math.random() * 80 + 10}%`;
+                    newWhisper.style.left = `${Math.random() * 80 + 10}%`;
+                    newWhisper.style.position = 'fixed';
+                    document.body.appendChild(newWhisper);
+
+                    // Play creepy sound
+                    const sounds = [
+                        "Distant screams echo in the fog...",
+                        "The waves whisper your name...",
+                        "Something is watching you from the deep...",
+                        "The compass spins wildly...",
+                        "You hear the song of the sirens...",
+                        "The ship creaks, but there's no wind..."
+                    ];
+                    creepySound.textContent = sounds[Math.floor(Math.random() * sounds.length)];
+                }
+            });
+        }, 2000);
+
+        // Random whispers appearing
+        setInterval(() => {
+            const newWhisper = document.createElement('div');
+            newWhisper.className = 'whisper';
+            const whispers = [
+                "They're still out there...",
+                "The gold is cursed...",
+                "The Kraken is always watching...",
+                "The compass knows...",
+                "The sirens are mourning...",
+                "The ghost fleet is sailing...",
+                "You're not alone...",
+                "The sea remembers..."
+            ];
+            newWhisper.textContent = whispers[Math.floor(Math.random() * whispers.length)];
+            newWhisper.style.top = `${Math.random() * 80 + 10}%`;
+            newWhisper.style.left = `${Math.random() * 80 + 10}%`;
+            newWhisper.style.position = 'fixed';
+            document.body.appendChild(newWhisper);
+
+            // Remove whisper after some time
+            setTimeout(() => {
+                newWhisper.remove();
+            }, 10000);
+        }, 15000);
+
+        // Change creepy sound randomly
+        setInterval(() => {
+            const sounds = [
+                "Distant cannon fire echoes in the fog...",
+                "The waves whisper your name...",
+                "Something is watching you from the deep...",
+                "The compass spins wildly...",
+                "You hear the song of the sirens...",
+                "The ship creaks, but there's no wind...",
+                "A ghostly figure stands at the bow...",
+                "The gold doubloons rattle in the chest...",
+                "The Kraken's tentacles brush against the hull...",
+                "The crew is silent. Too silent..."
+            ];
+            creepySound.textContent = sounds[Math.floor(Math.random() * sounds.length)];
+        }, 20000);
+    </script>
+</body>
+</html>
